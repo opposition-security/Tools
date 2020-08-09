@@ -41,6 +41,7 @@ td {
 padding: 4px;
 margin: 0px;
 border: 0;
+color: #FFF;
 }
 
 hr {
@@ -127,6 +128,10 @@ foreach ($computer in $computerData) {
 
       $LocalAdmins = ConvertTo-Html -PreContent "<h3>Local Administrators</h3>"
       ConvertTo-Html -InputObject $allAdmins
+      
+      # Get current logged on user
+      $LoggedOnUserHeader = ConvertTo-Html -PreContent "<h3>Current Logged On User"
+      $LoggedOnUser = Get-CimInstance -ComputerName $computer -ClassName Win32_ComputerSystem | ConvertTo-Html -As List -Property UserName -Fragment
 
       # Check for Server or Client OS
       $OSValidate = $OS -Match "Server"
@@ -229,7 +234,7 @@ foreach ($computer in $computerData) {
 
       $endComputerReport = ConvertTo-Html -PreContent "<p><hr>"
 
-      $computerReport += "$Workstationheader $ComputerName $OSVer $LocalAdmins $allAdmins $EndPointHeader $EndPointState $BitLockerHeader $BitLockerStatus $endComputerReport"
+      $computerReport += "$Workstationheader $ComputerName $OSVer $LocalAdmins $allAdmins $LoggedOnUserHeader $LoggedOnUser $EndPointHeader $EndPointState $BitLockerHeader $BitLockerStatus $endComputerReport"
     }
 
   else {    
