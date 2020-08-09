@@ -130,7 +130,7 @@ foreach ($computer in $computerData) {
       ConvertTo-Html -InputObject $allAdmins
       
       # Get current logged on user
-      $LoggedOnUserHeader = ConvertTo-Html -PreContent "<h3>Current Logged On User"
+      $LoggedOnUserHeader = ConvertTo-Html -PreContent "<h3>Current Logged On User</h3>"
       $LoggedOnUser = Get-CimInstance -ComputerName $computer -ClassName Win32_ComputerSystem | ConvertTo-Html -As List -Property UserName -Fragment
 
       # Check for Server or Client OS
