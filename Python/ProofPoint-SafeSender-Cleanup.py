@@ -2,9 +2,10 @@
 
 ######################################################
 # Author: Vosec                                      #
-# Description: Removes all domain entries from       #
-# every users safe senders. Export CSV from PPS      #
-# Users menu then use import from file after script. #
+# Description: Removes domain entries from every     #
+# users safe senders. Export CSV from PPS Users menu #
+# then use import from file after script. Modify     #
+# untrustedDomains as desired.                       #
 ######################################################
 
 import csv
@@ -16,7 +17,7 @@ untrustedDomains = ["gmail.com", "outlook.com", "yahoo.com", "msn.com", "aol.com
 # open new csv file for output
 newuserlist = open('newuserlist.csv', 'w')
 
-# build regex
+# build regex from untrustedDomains
 domainRegex = ""
 for domain in untrustedDomains:
     if domainRegex == "":
@@ -34,7 +35,8 @@ with open('userlist.csv', newline='') as csvfile:
     # write out csv header to file
     writer.writeheader()
 
-    # initialize counter
+    # initialize counters
+    totalEntries = 0
     removedEntries = 0
 
     # parse each row in userlist csv
@@ -48,12 +50,16 @@ with open('userlist.csv', newline='') as csvfile:
 
             # iterate through each entry
             for entry in safelist:
+                # increment entry counter
+                totalEntries += 1
+                # check if entry has untrusted domain
                 untrustedDomain = re.search(domainRegex, entry)
                 # check if the entry is an email or domain
                 if ("@" in entry) and not untrustedDomain and not (entry.startswith('@')):
                     # if entry is not an untrusted email, add to list for export
                     newsafelist.append(entry)
                 else:
+                    # increment entry counter
                     removedEntries += 1
                     print("Removing: " + entry)
 
@@ -69,4 +75,6 @@ with open('userlist.csv', newline='') as csvfile:
 newuserlist.close()
 
 # print count of entries removed
+print("Entries before cleanup: " + str(totalEntries))
 print("Removed " + str(removedEntries) + " Entries")
+print("Entries after cleanup: " + str(totalEntries - removedEntries))
