@@ -8,9 +8,21 @@
 ######################################################
 
 import csv
+import re
+
+# set variables
+untrustedDomains = ["gmail.com", "outlook.com", "yahoo.com", "msn.com", "aol.com", "me.com", "icloud.com"]
 
 # open new csv file for output
 newuserlist = open('newuserlist.csv', 'w')
+
+# build regex
+domainRegex = ""
+for domain in untrustedDomains:
+    if domainRegex == "":
+        domainRegex += "@" + domain
+    else:
+        domainRegex += "|@" + domain
 
 # open input file obtained from PPS
 with open('userlist.csv', newline='') as csvfile:
@@ -21,6 +33,9 @@ with open('userlist.csv', newline='') as csvfile:
     writer = csv.DictWriter(newuserlist, fieldnames=reader.fieldnames)
     # write out csv header to file
     writer.writeheader()
+
+    # initialize counter
+    removedEntries = 0
 
     # parse each row in userlist csv
     for row in reader:
@@ -33,11 +48,13 @@ with open('userlist.csv', newline='') as csvfile:
 
             # iterate through each entry
             for entry in safelist:
+                untrustedDomain = re.search(domainRegex, entry)
                 # check if the entry is an email or domain
-                if ("@" in entry) and not (entry.startswith('@')):
-                    # if entry is an email, add to list for export
+                if ("@" in entry) and not untrustedDomain and not (entry.startswith('@')):
+                    # if entry is not an untrusted email, add to list for export
                     newsafelist.append(entry)
                 else:
+                    removedEntries += 1
                     print(entry)
 
             # convert list to semicolon separated string
@@ -50,3 +67,6 @@ with open('userlist.csv', newline='') as csvfile:
 
 # close output file
 newuserlist.close()
+
+# print count of entries removed
+print("Removed " + str(removedEntries) + " Entries")
