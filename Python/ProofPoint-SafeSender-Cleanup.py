@@ -55,7 +55,7 @@ with open('userlist.csv', newline='') as csvfile:
                     newsafelist.append(entry)
                 else:
                     removedEntries += 1
-                    print(entry)
+                    print("Removing: " + entry)
 
             # convert list to semicolon separated string
             newcsvsafelist = ';'.join(newsafelist)
