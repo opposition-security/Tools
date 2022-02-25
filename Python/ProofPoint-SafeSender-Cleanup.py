@@ -8,6 +8,12 @@
 # untrustedDomains as desired.                       #
 ######################################################
 
+###### IMPORTANT NOTE ######
+# As of 2/25/22 and PPS 8.18.0, if you import and select 
+# the replace full user record option with PPS\Encryption_Users
+# in the CSV, they will lose their memberOf attribute and
+# potentially break authentication if the default is not PPS.
+
 import csv
 import re
 
